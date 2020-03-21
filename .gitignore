@@ -1,0 +1,12 @@
+__pycache__/
+build/
+cache/
+dist/
+docs/
+*.egg-info/
+.idea/
+venv*/
+
+*.backup
+.directory
+desktop.ini
