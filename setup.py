@@ -16,7 +16,7 @@ setup(
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     url='https://github.com/biqqles/flair',
-    packages=['flair'],
+    packages=['flair', 'flair.augment', 'flair.hook', 'flair.inspect'],
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)',
