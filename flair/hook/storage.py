@@ -50,7 +50,7 @@ def get_user_keymap() -> Dict[str, str]:
     """Get Freelancer's current key map as defined in UserKeyMap.ini, in a format understood by the `keyboard`
     module."""
     assert IS_WIN
-    key_map = ini.parse(USER_KEY_MAP, 'keycmd', fold_values=False)
+    key_map = ini.sections(USER_KEY_MAP, fold_values=False)['keycmd']
 
     result = {}  # nicknames to keyboard "hotkeys"
 
