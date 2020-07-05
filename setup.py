@@ -9,7 +9,7 @@ from setuptools import setup
 
 setup(
     name='fl-flair',
-    version='0.1',
+    version='0.2',
     author='biqqles',
     author_email='biqqles@protonmail.com',
     description='A novel client-side hook for Freelancer',
