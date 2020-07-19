@@ -5,9 +5,8 @@
  License, v. 2.0. If a copy of the MPL was not distributed with this
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
+from typing import Dict
 import os
-from typing import Dict, Tuple
-import xml.etree.ElementTree
 
 from flint.formats import ini
 
@@ -17,12 +16,6 @@ if IS_WIN:
     import ctypes
     import win32api
     import winreg
-
-REGISTRY_DIR = r'Software\Microsoft\Microsoft Games\Freelancer\1.0'
-USER_KEY_MAP = os.path.expanduser(r'~\Documents\My Games\Freelancer\UserKeyMap.ini')
-DSY_LAUNCHER_ACCOUNTS = os.path.expanduser(r'~\Documents\My Games\Discovery\launcheraccounts.xml')
-DSY_DSACE = os.path.expanduser(r'~\Documents\My Games\Freelancer\DSAce.log')
-CHAT_MESSAGE_MAX_LENGTH = 140
 
 
 def get_active_account_name() -> str:
@@ -68,18 +61,6 @@ def get_user_keymap() -> Dict[str, str]:
     return result
 
 
-def tail_chat_log():
-    """(Discovery only)
-    Get the last message recorded in DSAce.log"""
-    file_length = os.stat(DSY_DSACE).st_size
-    f = open(DSY_DSACE)
-    f.seek(file_length - CHAT_MESSAGE_MAX_LENGTH)  # can't do nonzero end-relative seeks so do this instead
-    tail = f.read()
-    return tail.splitlines()[-1]
-
-
-def get_launcher_accounts() -> Dict[str, Tuple[str, str]]:
-    """(Discovery only)
-    Parse launcheraccounts.xml to a dictionary of tuples of the form {code: (name, description)}."""
-    root = xml.etree.ElementTree.parse(DSY_LAUNCHER_ACCOUNTS).getroot()
-    return {a.get('code'): (a.text, a.get('description')) for a in root.findall('account')}
+REGISTRY_DIR = r'Software\Microsoft\Microsoft Games\Freelancer\1.0'
+USER_KEY_MAP = os.path.expanduser(r'~\Documents\My Games\Freelancer\UserKeyMap.ini')
+CHAT_MESSAGE_MAX_LENGTH = 140
