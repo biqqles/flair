@@ -35,13 +35,12 @@ class state_variable:
     def __get__(self, instance, owner):
         """Return the current value of the state variable. If the game is not running, this is the default value."""
         if not window.is_present():
-            self.last = self.default
+            return self.default
         else:
             if self.passive:
                 return self.last
             new_value = self.fget(instance)
             return new_value
-        return self.last
 
     def __set__(self, instance, value):
         """Handle state variable being updated."""
