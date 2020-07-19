@@ -5,13 +5,10 @@
  License, v. 2.0. If a copy of the MPL was not distributed with this
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
-from .. import IS_WIN
+from typing import Tuple
 
-if IS_WIN:
-    import win32con
-    import win32gui
-
-WINDOW_TITLE = 'Freelancer'
+import win32con
+import win32gui
 
 
 def get_hwnd() -> int:
@@ -21,15 +18,22 @@ def get_hwnd() -> int:
 
 def is_present() -> bool:
     """Reports whether Freelancer is running."""
-    return bool(get_hwnd()) if IS_WIN else False
+    return bool(get_hwnd())
 
 
 def is_foreground() -> bool:
     """Reports whether Freelancer is in the foreground and accepting input."""
-    return (win32gui.GetForegroundWindow() == get_hwnd()) if IS_WIN else False
+    return win32gui.GetForegroundWindow() == get_hwnd()
 
 
-def get_screen_coordinates():
+def make_foreground():
+    """Bring Freelancer's window into the foreground and make it active."""
+    hwnd = get_hwnd()
+    win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
+    win32gui.SetForegroundWindow(hwnd)
+
+
+def get_screen_coordinates() -> Tuple[int, int, int, int]:
     """Return the screen coordinates for the contents ("client"; excludes window decorations) of a Freelancer window."""
     hwnd = get_hwnd()
     left_x, top_y, right_x, bottom_y = win32gui.GetClientRect(hwnd)
@@ -50,3 +54,6 @@ def make_borderless():
     # move the window up to compensate for the lack of a titlebar
     # the two flags result in the second, fifth and six arguments being ignored so we don't have to worry about them
     win32gui.SetWindowPos(hwnd, 0, 0, -titlebar_height, 0, 0, win32con.SWP_NOSIZE | win32con.SWP_NOZORDER)
+
+
+WINDOW_TITLE = 'Freelancer'
