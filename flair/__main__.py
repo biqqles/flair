@@ -42,5 +42,5 @@ if __name__ == '__main__':
     events.switched_to_background.connect(lambda: print_event('Freelancer switched to background'))
 
     game_state = FreelancerState(arguments.freelancer_dir)
-    game_state.begin_polling()
+    game_state.begin_polling(print_state=True)
     augmentations = augment.Augmentation.load_all(game_state)

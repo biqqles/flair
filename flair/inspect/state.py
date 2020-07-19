@@ -39,8 +39,7 @@ class state_variable:
         else:
             if self.passive:
                 return self.last
-            new_value = self.fget(instance)
-            return new_value
+            return self.fget(instance)
 
     def __set__(self, instance, value):
         """Handle state variable being updated."""
@@ -57,7 +56,8 @@ class state_variable:
 
 
 class FreelancerState:
-    """Many variables provided by this class are abstractions on those available from hook"""
+    """An object which holds the state of the game and emits most of flair's events when it detects that a variable has
+    changed."""
     def __init__(self, freelancer_root):
         fl.paths.set_install_path(freelancer_root)
         self._systems = {s.name() for s in fl.get_systems() if s.name()}
@@ -92,8 +92,9 @@ class FreelancerState:
             self.mouseover = self.mouseover
             self.chat_box = self.chat_box
 
-    def begin_polling(self, period=1.0, print_state=True):
-        """Begin polling the game's state and emitting events. Called upon instantiation by default."""
+    def begin_polling(self, period=1.0, print_state=False):
+        """Begin polling the game's state and emitting events. Called upon instantiation by default. If `print_state`
+        is true, the instance's repr will be printed on each refresh."""
         def poll():
             self.refresh()
             if print_state:
@@ -143,7 +144,7 @@ class FreelancerState:
 
     @chat_box.changed
     def chat_box(self, new, last):
-        return  # handled by input.py
+        return  # passive - handled by input.py
 
     @state_variable(initially='')
     def account(self) -> str:
@@ -201,8 +202,7 @@ class FreelancerState:
     def system(self) -> Optional[str]:
         """The display name (e.g. "New London") of the system the active character is in if there is one, otherwise
         None."""
-        # set in mouseover
-        return
+        return  # passive - set in mouseover
 
     @system.changed
     def system(self, new, last):
@@ -212,8 +212,7 @@ class FreelancerState:
     def base(self) -> Optional[str]:
         """The display name (e.g. "The Ring") of the base the active character last docked at if there is one,
         otherwise None."""
-        # set in docked
-        return
+        return  # passive - set in docked
 
     @state_variable(initially=None)
     def docked(self) -> Optional[bool]:
