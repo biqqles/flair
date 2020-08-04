@@ -9,27 +9,21 @@ from typing import Dict
 import os
 
 from flint.formats import ini
-
-from .. import IS_WIN
-
-if IS_WIN:
-    import ctypes
-    import win32api
-    import winreg
+import ctypes
+import win32api
+import winreg
 
 
 def get_active_account_name() -> str:
     """Returns the currently active account's code ("name") from the registry.
     Note that Freelancer reads the account from the registry at the time of server connect.
     """
-    assert IS_WIN
     handle = winreg.CreateKey(winreg.HKEY_CURRENT_USER, REGISTRY_DIR)
     return winreg.QueryValueEx(handle, 'MPAccountName')[0]
 
 
 def virtual_key_to_name(vk) -> str:
     """Get the name of a key from its VK (virtual key) code."""
-    assert IS_WIN
     scan_code = win32api.MapVirtualKey(vk, 0)
     # pywin32 doesn't include GetKeyNameTextW so we need to use windll
     name_buffer = ctypes.create_unicode_buffer(32)
@@ -42,7 +36,6 @@ def virtual_key_to_name(vk) -> str:
 def get_user_keymap() -> Dict[str, str]:
     """Get Freelancer's current key map as defined in UserKeyMap.ini, in a format understood by the `keyboard`
     module."""
-    assert IS_WIN
     key_map = ini.sections(USER_KEY_MAP, fold_values=False)['keycmd']
 
     result = {}  # nicknames to keyboard "hotkeys"
