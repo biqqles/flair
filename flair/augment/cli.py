@@ -45,7 +45,10 @@ class CLI(Augmentation):
         """Evaluate the given expression with Python"""
         def __call__(self, *expression):
             if expression:
-                input.queue_display_text(f"= {str(eval(' '.join(expression)))}")
+                try:
+                    input.queue_display_text(f"=> {eval(' '.join(expression))}")
+                except Exception as e:
+                    input.queue_display_text(f"Err: {e}")
 
     class Quit(Command):
         """Quit the game"""
@@ -69,8 +72,8 @@ class CLI(Augmentation):
         message_sent.disconnect(self.parse_message)
 
     @staticmethod
-    def show_welcome_message(character_name: str):
-        input.queue_display_text(f'Welcome to Sirius, {character_name}. You\'re using flair {__version__}. '
+    def show_welcome_message(name: str):
+        input.queue_display_text(f'Welcome to Sirius, {name}. You\'re using flair {__version__}. '
                                  'Type ..help to list a few commands.')
 
     def parse_message(self, message: str):

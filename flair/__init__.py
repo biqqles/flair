@@ -5,20 +5,27 @@
  License, v. 2.0. If a copy of the MPL was not distributed with this
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
-__version__ = 0.1
+__version__ = 0.3
+
 try:
     from ctypes import windll
-    IS_WIN = True
     IS_ADMIN = bool(windll.advpack.IsNTAdmin(0, None))
 except ImportError:
-    IS_WIN = False
-    IS_ADMIN = False
+    raise ImportError('flair is only importable on Windows')
 else:
+    if not IS_ADMIN:
+        raise ImportError('flair must be run as Administrator')
     del windll
 
-if not IS_ADMIN:
-    raise ImportError('flair must be run as administrator')
-
 from . import hook, augment, inspect
-from .inspect.state import FreelancerState
 from .inspect import events
+from .inspect.state import FreelancerState
+
+state: FreelancerState
+
+
+def set_install_path(path: str):
+    """Set the path to the Freelancer installation directory this hook should work with. Accessing `state` before
+    this is executed will cause an `AttributeError`."""
+    global state
+    state = FreelancerState(path)
