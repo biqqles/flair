@@ -58,7 +58,7 @@ def read_memory(process: HANDLE, address: int, datatype: type, buffer_size=128):
 
     if windll.kernel32.ReadProcessMemory(handle, address, buffer, len(buffer), 0):
         if datatype is str:
-            value = ''.join(map(chr, buffer.raw[:buffer.raw.index(b'\0\0'):2]))
+            value = buffer.raw.decode('utf-16').partition('\0')[0]
         else:
             memmove(byref(value), buffer, sizeof(value))
             value = value.value  # C type -> Python type, effectively
