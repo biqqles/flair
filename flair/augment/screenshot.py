@@ -32,7 +32,7 @@ class Screenshot(Augmentation):
         character_name = self._state.name
         system_name = self._state.system
         date = datetime.now().strftime('%y-%m-%d %H.%M.%S')  # in practice only one screenshot can be taken per second
-        directory_path = os.path.join(self.screenshots_root_dir, character_name)
+        directory_path = os.path.join(self.screenshots_root_dir, str(character_name))
         file_path = os.path.join(directory_path, f'{date} {system_name}.png')
         os.makedirs(directory_path, exist_ok=True)
         ImageGrab.grab(window.get_screen_coordinates()).save(file_path, 'PNG')
