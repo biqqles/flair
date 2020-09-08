@@ -34,7 +34,7 @@ if __name__ == '__main__':
     events.undocked.connect(lambda: print_event('Undocked from base'))
     events.credits_changed.connect(lambda balance: print_event('Credit balance changed:', balance))
     events.character_changed.connect(lambda name: print_event('Character loaded:', name))
-    events.account_changed.connect(lambda name: print_event('Account loaded:', name))
+    events.account_changed.connect(lambda account: print_event('Account loaded:', account))
     events.chat_box_opened.connect(lambda: print_event('Chat box opened'))
     events.chat_box_closed.connect(
         lambda message_sent: print_event('Chat box closed, message', f'{"" if message_sent else "un"}sent'))

@@ -8,29 +8,32 @@
 
 
 class Signal(set):
-    """A simple event object inspired by Qt's signals and slots mechanism.
+    """A simple event object inspired by Qt's signals and slots mechanism."""
 
-    Instances of this class can be 'connected' to functions which will be called once it is 'emitted'."""
-    def __init__(self, **payload):
-        # payload is a description of the data this field will emit
+    def __init__(self, **schema):
+        """`schema` is a description of the data this signal is intended to send to connected functions when emitted."""
         super().__init__()
-        self.payload = payload
+        self.schema = schema
 
     def connect(self, function):
+        """Connect this signal to a function. This means that it will be called when the signal is emitted."""
         self.add(function)
 
     def disconnect(self, function):
+        """Disconnect this signal from a function."""
         if function in self:
             self.remove(function)
 
     def disconnect_all(self):
+        """Disconnect all functions from this signal."""
         self.clear()
 
     def emit(self, **payload):
-        if not set(payload) == set(self.payload):  # compare keys
+        """Emit this signal, causing all connected functions to be executed with `payload` sent as keyword arguments."""
+        if not set(payload) == set(self.schema):  # compare keys
             raise ValueError('Payload does not conform to the schema specified for this signal')
-        for function in self:  # todo consider a more helpful error message here
-            function(*payload.values())
+        for function in self:
+            function(**payload)
 
 
 # /Name/                                     # /Emitted when/                           # /Parameter(s)/
