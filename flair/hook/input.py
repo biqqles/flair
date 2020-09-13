@@ -15,14 +15,14 @@ if not IS_ADMIN:
 import time
 from typing import List, Tuple
 
-import keyboard as keyboard
+import keyboard
 
 from . import process, window, storage
 from ..inspect.events import message_sent, chat_box_closed, chat_box_opened  # emits
 from ..inspect.events import switched_to_background, switched_to_foreground  # utilises
 
 INDENT = ' ' * 4
-ECHO_PREAMBLE = '|=|  '
+ECHO_PREAMBLE = '/=/  '  # see docstring for send_message
 KEY_SEND_MESSAGE = 'enter'  # unlike the hotkey to open the chat box, these keys are hardcoded
 KEY_CLOSE_CHAT_BOX = 'esc'
 KEY_CHANGE_CHAT_CHANNEL = 'up'
@@ -54,12 +54,20 @@ def queue_display_text(text: str):
 
 
 def send_message(message: str, private=True):
-    """Inserts `message` into the chat box and sends it. If `private` is true, send to the Console."""
+    """Inserts `message` into the chat box and sends it. If `private` is true, send to the Console.
+
+    Warning: on non-FLHooked servers, `private` mode is implemented by switching the broadcast channel "up" one to
+    activate Console mode. This will not work if a channel other than local (e.g. a group or PM) is selected as the
+    default, and the message will be sent to a random player!
+
+    Where FLHook is available, this is mitigated by `ECHO_PREAMBLE` which marks the message as a command, meaning it
+    will never be sent to other players.
+    """
     assert window.is_foreground(), not process.get_chat_box_state(process.get_process())
     text = str(message).encode('ascii', errors='ignore').decode()  # strip out all non-ascii characters
     inject_keys(get_chat_box_open_hotkey())  # open chat box
     if private:
-        inject_keys(KEY_CHANGE_CHAT_CHANNEL, after_delay=.001)  # switch to Console (private to player)
+        inject_keys(KEY_CHANGE_CHAT_CHANNEL, after_delay=.001)  # (hopefully) switch to Console (private to player)
         text = ECHO_PREAMBLE + text
     keyboard.write(text)
     keyboard.send(KEY_SEND_MESSAGE)
