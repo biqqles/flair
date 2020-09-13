@@ -73,8 +73,9 @@ class CLI(Augmentation):
 
     @staticmethod
     def show_welcome_message(name: str):
-        input.queue_display_text(f'Welcome to Sirius, {name}. You\'re using flair {__version__}. '
-                                 'Type ..help to list a few commands.')
+        """Greet the player on login."""
+        input.queue_display_text(f"Welcome to Sirius, pilot. You're using flair {__version__}."
+                                 " Type ..help to list a few commands.")
 
     def parse_message(self, message: str):
         """Parse and interpret a message."""
