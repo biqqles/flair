@@ -19,8 +19,6 @@ pip install https://github.com/biqqles/flair/archive/master.zip -U
 Built wheels are also available under [Releases](https://github.com/biqqles/flair/releases), as is a changelog. flair requires Python 3.6 or higher.
 
 ### Basic usage
-flair must be run with administrator privileges. This is required for it to be able to hook keyboard input in Freelancer.
-
 flair includes a testing mode. To access it run `python -m flair <path_to_freelancer>`. In this mode flair will load all built-in augmentations, print all events, and begin polling and printing the state of the game to the terminal. More on all of those later.
 
 ### State and events

@@ -7,16 +7,6 @@
 """
 __version__ = 0.3
 
-try:
-    from ctypes import windll
-    IS_ADMIN = bool(windll.advpack.IsNTAdmin(0, None))
-except ImportError:
-    raise ImportError('flair is only importable on Windows')
-else:
-    if not IS_ADMIN:
-        raise ImportError('flair must be run as Administrator')
-    del windll
-
 from . import hook, augment, inspect
 from .inspect import events
 from .inspect.state import FreelancerState

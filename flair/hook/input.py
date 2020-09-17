@@ -7,11 +7,6 @@
 """
 from types import FunctionType
 
-from .. import IS_ADMIN
-
-if not IS_ADMIN:
-    raise ImportError('flair must be run as administrator to be able to hook keyboard input in Freelancer')
-
 import time
 from typing import List, Tuple
 
@@ -89,7 +84,7 @@ def inject_text(text: str):
 def initialise_hotkey_hooks():
     """Initialise hotkey hooks for Freelancer. Should be run when, and only when, the Freelancer window is brought into
     the foreground."""
-    assert IS_ADMIN, window.is_present()
+    assert window.is_present()
     # the user_chat hotkey always opens the chat box, no matter which other dialogues are up
     box_initially_open = process.get_chat_box_state(process.get_process())
     if box_initially_open:
