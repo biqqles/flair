@@ -46,7 +46,7 @@ def get_process() -> HANDLE:
         process = win32api.OpenProcess(win32con.PROCESS_VM_READ, 0, pid)
     except win32api.error as e:
         if e.winerror == 5:
-            raise PermissionError(errno.EPERM, f'{e.funcname}: {e.strerror} (WinError {e.winerror})')
+            raise PermissionError(errno.EPERM, f'{e.funcname}: {e.strerror} (WinError {e.winerror})') from e
         raise
     return process
 
