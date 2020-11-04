@@ -7,6 +7,7 @@
 """
 from typing import Tuple
 from ctypes import *
+import errno
 
 from pywintypes import HANDLE
 import win32api
@@ -41,7 +42,12 @@ def get_process() -> HANDLE:
     """Return a handle to Freelancer's process."""
     hwnd = get_hwnd()
     pid = win32process.GetWindowThreadProcessId(hwnd)[1]
-    process = win32api.OpenProcess(win32con.PROCESS_VM_READ, 0, pid)
+    try:
+        process = win32api.OpenProcess(win32con.PROCESS_VM_READ, 0, pid)
+    except win32api.error as e:
+        if e.winerror == 5:
+            raise PermissionError(errno.EPERM, f'{e.funcname}: {e.strerror} (WinError {e.winerror})')
+        raise
     return process
 
 
