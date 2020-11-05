@@ -13,11 +13,15 @@ from ..hook import window, input
 from . import Augmentation
 
 import os
+import sys
 
 
 class Screenshot(Augmentation):
     """Adds proper screenshot functionality to the game."""
-    HOTKEY = 'ctrl+prtscn'
+    if sys.platform.startswith('win32'):
+        HOTKEY = 'ctrl+prtscn'
+    elif sys.platform.startswith('linux'):
+        HOTKEY = 'ctrl+compose'
     screenshots_root_dir = os.path.expanduser('~/Documents/My Games/Freelancer/Screenshots')
 
     def load(self):

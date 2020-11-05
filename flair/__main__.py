@@ -7,24 +7,63 @@
 """
 import argparse
 import os
+import sys
 
-from . import events, augment
+from . import events, augment, hook, inspect
 from . import FreelancerState
+from . import set_install_path
+from . import get_state
+
+import rpyc
+from rpyc.utils.server import ThreadedServer
+
+
+class FlairService(rpyc.Service):
+    exposed_hook = hook
+    exposed_augment = augment
+    exposed_inspect = inspect
+    exposed_events = events
+    exposed_FreelancerState = FreelancerState
+
+    def __init__(self, wine_prefix_dir):
+        self.wine_prefix_dir = wine_prefix_dir
+
+    def exposed_set_install_path(self, path):
+        set_install_path(path, self.wine_prefix_dir)
+
+    def exposed_get_state(self):
+        return get_state()
 
 
 if __name__ == '__main__':
     # parse command line arguments
     parser = argparse.ArgumentParser(prog='flair', description='flair, a novel client-side hook for Freelancer')
     parser.add_argument('freelancer_dir', help='Path to a working Freelancer install directory')
+    if sys.platform.startswith('linux'):
+        parser.add_argument('-r', '--rpyc', action='store_true')
+        parser.add_argument('-p', '--port', default=18861, type=int)
+        parser.add_argument('freelancer_wine_prefix_dir', help='Path to the wine prefix containing Freelancer')
     arguments = parser.parse_args()
 
     # enable ANSI colour codes on Windows
-    os.system('color')
+    if sys.platform.startswith('win32'):
+        os.system('color')
 
     def print_event(*args):
         """Print an event to terminal with emphasis (using ANSI colour codes). How this displays exactly varies between
         terminals."""
         print('\033[1m' + ' '.join(map(str, args)) + '\033[0m')
+
+    if arguments.rpyc:
+        t = ThreadedServer(
+            FlairService(arguments.freelancer_wine_prefix_dir),
+            port=arguments.port,
+            protocol_config={
+                'allow_public_attrs': True,
+            },
+        )
+        t.start()
+        sys.exit(0)
 
     events.message_sent.connect(lambda message: print_event('Message sent:', message))
     events.freelancer_started.connect(lambda: print_event('Freelancer started'))
@@ -41,6 +80,11 @@ if __name__ == '__main__':
     events.switched_to_foreground.connect(lambda: print_event('Freelancer switched to foreground'))
     events.switched_to_background.connect(lambda: print_event('Freelancer switched to background'))
 
-    game_state = FreelancerState(arguments.freelancer_dir)
-    game_state.begin_polling(print_state=True)
+    if sys.platform.startswith('linux'):
+        fl_wine_prefix_dir = arguments.freelancer_wine_prefix_dir
+    else:
+        fl_wine_prefix_dir = None
+
+    game_state = FreelancerState(arguments.freelancer_dir, fl_wine_prefix_dir)
+    game_state.begin_polling(print_state=False)
     augmentations = augment.Augmentation.load_all(game_state)

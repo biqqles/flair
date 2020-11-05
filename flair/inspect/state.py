@@ -5,6 +5,7 @@
  License, v. 2.0. If a copy of the MPL was not distributed with this
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
+import sys
 import threading
 from typing import Optional
 
@@ -58,12 +59,14 @@ class state_variable:
 class FreelancerState:
     """An object which holds the state of the game and emits most of flair's events when it detects that a variable has
     changed."""
-    def __init__(self, freelancer_root):
+    def __init__(self, freelancer_root, freelancer_wine_prefix=None):
         fl.paths.set_install_path(freelancer_root)
         self._systems = {s.name() for s in fl.get_systems() if s.name()}
         self._bases = {b.name() for b in fl.get_bases() if b.name()}
         self._timer = None
         self._process = 0
+        if sys.platform.startswith('linux'):
+            storage.set_wine_prefix_path(freelancer_wine_prefix)
         self.begin_polling()
 
     def __str__(self):
@@ -121,7 +124,7 @@ class FreelancerState:
             self._process = process.get_process()
             events.freelancer_started.emit()
         else:  # Freelancer has been stopped
-            if self._process:
+            if sys.platform.startswith('win32') and self._process:
                 self._process.close()
             events.freelancer_stopped.emit()
 

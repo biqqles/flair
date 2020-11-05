@@ -14,8 +14,13 @@ from .inspect.state import FreelancerState
 state: FreelancerState
 
 
-def set_install_path(path: str):
+def set_install_path(path: str, wine_prefix_path=None):
     """Set the path to the Freelancer installation directory this hook should work with. Accessing `state` before
     this is executed will cause an `AttributeError`."""
     global state
-    state = FreelancerState(path)
+    state = FreelancerState(path, wine_prefix_path)
+
+
+def get_state():
+    global state
+    return state

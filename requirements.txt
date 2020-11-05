@@ -1,5 +1,7 @@
 deconstruct
 fl-flint>=0.5
 keyboard>=0.11.0
-pywin32
+pywin32; platform_system=="Windows"
+pyperclip
+python-xlib; platform_system=="Linux"
 Pillow
