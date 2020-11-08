@@ -15,7 +15,7 @@ from . import set_install_path
 from . import get_state
 
 import rpyc
-from rpyc.utils.server import ThreadedServer
+from rpyc.utils.server import OneShotServer
 
 
 class FlairService(rpyc.Service):
@@ -55,7 +55,7 @@ if __name__ == '__main__':
         print('\033[1m' + ' '.join(map(str, args)) + '\033[0m')
 
     if arguments.rpyc:
-        t = ThreadedServer(
+        t = OneShotServer(
             FlairService(arguments.freelancer_wine_prefix_dir),
             port=arguments.port,
             protocol_config={
@@ -63,7 +63,7 @@ if __name__ == '__main__':
             },
         )
         t.start()
-        sys.exit(0)
+        os._exit(0)
 
     events.message_sent.connect(lambda message: print_event('Message sent:', message))
     events.freelancer_started.connect(lambda: print_event('Freelancer started'))
