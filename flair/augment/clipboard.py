@@ -6,7 +6,7 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 import keyboard
-import win32clipboard
+import pyperclip
 
 from . import Augmentation
 from ..hook import input, process
@@ -41,19 +41,11 @@ class Clipboard(Augmentation):
         assert process.get_chat_box_state(process.get_process())
         text = input.get_chat_box_contents()
         if text:  # if there's nothing in the chat box don't just wipe out what's currently in the clipboard
-            win32clipboard.OpenClipboard()
-            win32clipboard.EmptyClipboard()
-            win32clipboard.SetClipboardText(text, win32clipboard.CF_UNICODETEXT)
-            win32clipboard.CloseClipboard()
+            pyperclip.copy(text)
 
     @staticmethod
     def paste_to_chat_box():
         assert process.get_chat_box_state(process.get_process())
-        win32clipboard.OpenClipboard()
-        try:
-            clipboard = win32clipboard.GetClipboardData(win32clipboard.CF_UNICODETEXT)
-            input.inject_text(clipboard.replace('\n', ''))
-        except TypeError:  # raised if something that isn't text is in the clipboard
-            pass
-        finally:
-            win32clipboard.CloseClipboard()
+        contents = pyperclip.paste()
+        if contents:
+            input.inject_text(contents.replace('\n', ''))
