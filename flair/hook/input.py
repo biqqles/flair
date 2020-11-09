@@ -12,11 +12,7 @@ from typing import List, Tuple
 
 import keyboard
 
-import sys
-if sys.platform.startswith('win32'):
-    from . import process, storage
-elif sys.platform.startswith('linux'):
-    from . import process_linux as process, storage_linux as storage
+from . import process, storage
 
 from . import window
 from ..inspect.events import message_sent, chat_box_closed, chat_box_opened  # emits

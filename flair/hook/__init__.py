@@ -7,12 +7,6 @@
 
  This file ensures all hook components are initialised.
 """
-import sys
-
 from . import input, window
 
-if sys.platform.startswith('win32'):
-    from . import process, storage
-elif sys.platform.startswith('linux'):
-    from . import process_linux as process, storage_linux as storage
-    from . import vk_linux
+from . import process, storage
