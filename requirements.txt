@@ -5,3 +5,4 @@ Pillow
 pyperclip
 pywin32; platform_system=="Windows"
 python-xlib; platform_system=="Linux"
+rpyc; platform_system=="Linux"
