@@ -6,18 +6,9 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 from typing import Tuple
-from ctypes import *
-import errno
+from ctypes import c_float, c_uint, c_uint32
 
-from pywintypes import HANDLE
-import win32api
-import win32process
-import win32con
-
-from .window import get_hwnd
-
-
-PROCESS_VM_READ = 0x10  # <https://msdn.microsoft.com/en-us/library/windows/desktop/ms684880(v=vs.85).aspx>
+from ... import platforms
 
 # useful addresses to read from. These are all static, obviously. In the future I may look for static pointers to
 # dynamic addresses. Offsets correct for v1.1 executable.
@@ -38,66 +29,27 @@ READ_ADDRESSES = {
 }
 
 
-def get_process() -> HANDLE:
-    """Return a handle to Freelancer's process."""
-    hwnd = get_hwnd()
-    pid = win32process.GetWindowThreadProcessId(hwnd)[1]
-    try:
-        process = win32api.OpenProcess(win32con.PROCESS_VM_READ, 0, pid)
-    except win32api.error as e:
-        if e.winerror == 5:
-            raise PermissionError(errno.EPERM, f'{e.funcname}: {e.strerror} (WinError {e.winerror})') from e
-        raise
-    return process
-
-
-def read_memory(process: HANDLE, address: int, datatype: type, buffer_size=128):
-    """Reads Freelancer's process memory.
-
-    Just as with string resources, strings are stored as UTF-16 meaning that the end of a string is marked by two
-    consecutive null bytes. However, other bytes will be present in the buffer after these two nulls since it is of
-    arbitrary size, and these confuse Python's builtin .decode and result in UnicodeDecodeError. So we can't use it.
-    """
-    buffer = create_string_buffer(buffer_size)
-    value = datatype()
-    handle = process if isinstance(process, int) else process.handle
-
-    if windll.kernel32.ReadProcessMemory(handle, address, buffer, len(buffer), 0):
-        if datatype is str:
-            value = buffer.raw.decode('utf-16').partition('\0')[0]
-        else:
-            memmove(byref(value), buffer, sizeof(value))
-            value = value.value  # C type -> Python type, effectively
-    return value
-
-
-def get_value(process: HANDLE, key, size=None):
-    """Read a value from memory. `key` refers to the key of an address in `READ_ADDRESSES`"""
-    address, datatype = READ_ADDRESSES[key]
-    return read_memory(process, address, datatype, buffer_size=size or (sizeof(datatype) * 8))
-
-
-def get_string(process: HANDLE, key, length):
+def get_string(process: 'HANDLE', key, length):
     """Read a UTF-16 string from memory."""
     return get_value(process, key, (length * 2) + 2)
 
 
-def get_name(process: HANDLE) -> str:
+def get_name(process: 'HANDLE') -> str:
     """Read the name of the active character from memory."""
     return get_string(process, 'name', 23)
 
 
-def get_credits(process: HANDLE) -> int:
+def get_credits(process: 'HANDLE') -> int:
     """Read the credit balance of the active character from memory."""
     return get_value(process, 'credits')
 
 
-def get_position(process: HANDLE) -> Tuple[float, float, float]:
+def get_position(process: 'HANDLE') -> Tuple[float, float, float]:
     """Read the position of the active character from memory."""
     return get_value(process, 'pos_x'), get_value(process, 'pos_y'), get_value(process, 'pos_z')
 
 
-def get_mouseover(process: HANDLE) -> str:
+def get_mouseover(process: 'HANDLE') -> str:
     """This is a really interesting address. It seems to store random, unconnected pieces of text that have been
     recently displayed or interacted with in the game. These range from console outputs to the names of bases
     and planets immediately upon jumping in or docking, to the prices of commodities in the trader screen, to
@@ -106,28 +58,34 @@ def get_mouseover(process: HANDLE) -> str:
     return get_string(process, 'mouseover', 128)
 
 
-def get_rollover(process: HANDLE) -> str:
+def get_rollover(process: 'HANDLE') -> str:
     """Similar to mouseover, but usually contains tooltip text."""
     return get_string(process, 'rollover', 128)
 
 
-def get_last_message(process: HANDLE) -> str:
+def get_last_message(process: 'HANDLE') -> str:
     """Read the last message sent by the player from memory"""
     return get_string(process, 'last_message', 127)
 
 
-def get_chat_box_state(process: HANDLE) -> bool:
+def get_chat_box_state(process: 'HANDLE') -> bool:
     """Read the state of the chat box from memory."""
     dialogue_hooking_enter = get_value(process, 'enter_dialogue')
     dialogue_focused = get_value(process, 'focus_dialogue')
     return bool(dialogue_hooking_enter and not dialogue_focused)
 
 
-def get_character_loaded(process: HANDLE) -> bool:
+def get_character_loaded(process: 'HANDLE') -> bool:
     """Read whether a character is loaded (whether in SP or MP)."""
     return bool(get_value(process, 'logged_in'))
 
 
-def get_docked(process: HANDLE) -> bool:
+def get_docked(process: 'HANDLE') -> bool:
     """Read whether the active character is docked."""
     return not bool(get_value(process, 'in_space'))
+
+
+if platforms.WIN32:
+    from .win32 import get_process, read_memory, get_value
+elif platforms.LINUX:
+    pass

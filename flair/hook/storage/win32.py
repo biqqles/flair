@@ -6,12 +6,13 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 from typing import Dict
-import os
+import ctypes
 
 from flint.formats import ini
-import ctypes
 import win32api
 import winreg
+
+from . import REGISTRY_DIR, USER_KEY_MAP
 
 
 def get_active_account_name() -> str:
@@ -52,8 +53,3 @@ def get_user_keymap() -> Dict[str, str]:
         formatted = name + '+' + modifier[0] if modifier else name  # form into a string keyboard can understand
         result[nickname] = formatted
     return result
-
-
-REGISTRY_DIR = r'Software\Microsoft\Microsoft Games\Freelancer\1.0'
-USER_KEY_MAP = os.path.expanduser(r'~\Documents\My Games\Freelancer\UserKeyMap.ini')
-CHAT_MESSAGE_MAX_LENGTH = 140

@@ -10,6 +10,8 @@ from typing import Tuple
 import win32con
 import win32gui
 
+from . import WINDOW_TITLE
+
 
 def get_hwnd() -> int:
     """Returns a non-zero window handle to Freelancer if a window exists, otherwise, returns zero."""
@@ -54,6 +56,3 @@ def make_borderless():
     # move the window up to compensate for the lack of a titlebar
     # the two flags result in the second, fifth and six arguments being ignored so we don't have to worry about them
     win32gui.SetWindowPos(hwnd, 0, 0, -titlebar_height, 0, 0, win32con.SWP_NOSIZE | win32con.SWP_NOZORDER)
-
-
-WINDOW_TITLE = 'Freelancer'
