@@ -6,18 +6,18 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 from datetime import datetime
+import os
 
 from PIL import ImageGrab
 
 from ..hook import window, input
+from .. import platforms
 from . import Augmentation
-
-import os
 
 
 class Screenshot(Augmentation):
     """Adds proper screenshot functionality to the game."""
-    HOTKEY = 'ctrl+prtscn'
+    HOTKEY = 'ctrl+prtscn' if platforms.WIN32 else 'ctrl+compose'
     screenshots_root_dir = os.path.expanduser('~/Documents/My Games/Freelancer/Screenshots')
 
     def load(self):
