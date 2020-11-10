@@ -9,7 +9,13 @@ from ... import platforms
 
 WINDOW_TITLE = 'Freelancer'
 
+
+def is_present() -> bool:
+    """Reports whether Freelancer is running."""
+    return bool(get_hwnd())
+
+
 if platforms.WIN32:
-    from .win32 import get_hwnd, is_present, is_foreground, make_foreground, get_screen_coordinates, make_borderless
+    from .win32 import get_hwnd, is_foreground, make_foreground, get_screen_coordinates, make_borderless
 elif platforms.LINUX:
-    pass
+    from .linux import get_hwnd, is_foreground, make_foreground, get_screen_coordinates, make_borderless
