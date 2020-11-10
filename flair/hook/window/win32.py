@@ -18,11 +18,6 @@ def get_hwnd() -> int:
     return win32gui.FindWindow(WINDOW_TITLE, WINDOW_TITLE)
 
 
-def is_present() -> bool:
-    """Reports whether Freelancer is running."""
-    return bool(get_hwnd())
-
-
 def is_foreground() -> bool:
     """Reports whether Freelancer is in the foreground and accepting input."""
     return win32gui.GetForegroundWindow() == get_hwnd()
