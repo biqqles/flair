@@ -6,7 +6,7 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 from typing import Tuple
-from ctypes import c_float, c_uint, c_uint32, sizeof
+from ctypes import c_float, c_uint, c_uint32, sizeof, Array
 
 from ... import platforms
 
@@ -89,6 +89,11 @@ def get_character_loaded(process: 'HANDLE') -> bool:
 def get_docked(process: 'HANDLE') -> bool:
     """Read whether the active character is docked."""
     return not bool(get_value(process, 'in_space'))
+
+
+def buffer_as_utf16(buffer: Array) -> str:
+    """Decode a null-padded ctypes char array as a UTF-16 string."""
+    return buffer.raw.decode('utf-16').partition('\0')[0]
 
 
 if platforms.WIN32:
