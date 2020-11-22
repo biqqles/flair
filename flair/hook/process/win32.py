@@ -5,7 +5,6 @@
  License, v. 2.0. If a copy of the MPL was not distributed with this
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
-from typing import Tuple
 import ctypes
 import errno
 
@@ -15,7 +14,6 @@ import win32process
 import win32con
 
 from ..window import get_hwnd
-from . import READ_ADDRESSES
 
 
 PROCESS_VM_READ = 0x10  # <https://msdn.microsoft.com/en-us/library/windows/desktop/ms684880(v=vs.85).aspx>
@@ -52,9 +50,3 @@ def read_memory(process: HANDLE, address: int, datatype: type, buffer_size=128):
             ctypes.memmove(ctypes.byref(value), buffer, ctypes.sizeof(value))
             value = value.value  # C type -> Python type, effectively
     return value
-
-
-def get_value(process: HANDLE, key, size=None):
-    """Read a value from memory. `key` refers to the key of an address in `READ_ADDRESSES`"""
-    address, datatype = READ_ADDRESSES[key]
-    return read_memory(process, address, datatype, buffer_size=size or (ctypes.sizeof(datatype) * 8))
