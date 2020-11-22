@@ -5,7 +5,7 @@
  License, v. 2.0. If a copy of the MPL was not distributed with this
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
-from typing import Tuple, Union
+from typing import Tuple, Union, Optional
 
 from Xlib.display import Display
 from Xlib.error import BadWindow
@@ -15,7 +15,7 @@ from Xlib.xobject.drawable import Window
 from . import WINDOW_TITLE
 
 
-def find_window(name: str, window: Window) -> Window:
+def find_window(name: str, window: Window) -> Optional[Window]:
     """Recursively locate a window with name `name` in the tree, starting at `window`."""
     if window.get_wm_name() == name:
         return window
@@ -28,21 +28,17 @@ def find_window(name: str, window: Window) -> Window:
 
 def get_hwnd() -> Union[Window, int]:
     """Returns a non-zero window handle to Freelancer if a window exists, otherwise, returns zero."""
-    display = Display()
-
     try:
-        fl_window = find_window(WINDOW_TITLE, display.screen().root)
+        return find_window(WINDOW_TITLE, Display().screen().root)
     except BadWindow:
         return 0
-
-    return fl_window if fl_window else 0
 
 
 def is_foreground() -> bool:
     """Reports whether Freelancer is in the foreground and accepting input."""
     try:
         return Display().get_input_focus().focus.get_wm_name() == WINDOW_TITLE
-    except TypeError:
+    except (TypeError, AttributeError):
         return False
 
 
