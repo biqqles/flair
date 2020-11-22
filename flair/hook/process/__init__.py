@@ -99,4 +99,4 @@ def buffer_as_utf16(buffer: Array) -> str:
 if platforms.WIN32:
     from .win32 import get_process, read_memory
 elif platforms.LINUX:
-    pass
+    from .linux import get_process, read_memory
