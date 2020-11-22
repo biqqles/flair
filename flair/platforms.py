@@ -16,6 +16,11 @@ if not WIN32 and not LINUX:
 
 if WIN32:
     os.system('color')  # enable ANSI colour codes on Windows
+
+    HOME = os.path.expanduser('~')
+
 elif LINUX:
     if os.geteuid() != 0:
         raise ImportError('You must be superuser to use this library on Linux')
+
+    HOME = os.path.expanduser(f'~{os.environ["SUDO_USER"]}')
