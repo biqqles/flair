@@ -12,7 +12,7 @@ from flint.formats import ini
 from ... import platforms
 
 REGISTRY_DIR = r'Software\Microsoft\Microsoft Games\Freelancer\1.0'
-USER_KEY_MAP = f'{platforms.HOME}/Documents/My Games/Freelancer/UserKeyMap.ini'
+USER_KEY_MAP = f'{platforms.HOME}/My Documents/My Games/Freelancer/UserKeyMap.ini'
 CHAT_MESSAGE_MAX_LENGTH = 140
 
 
