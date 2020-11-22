@@ -9,6 +9,8 @@ import os.path
 
 import virtualkeys
 
+from ... import platforms
+from .. import storage
 from . import REGISTRY_DIR
 
 
@@ -42,7 +44,12 @@ def virtual_key_to_name(vk: int) -> str:
 
 
 def set_wine_prefix_path(path: str):
-    """Update the path to the registry."""
+    """Update the path to the registry and user key map."""
+    users_path = os.path.join(path, 'drive_c/users/')
+    users = set(os.listdir(users_path)) - {'Public'}
+    user = next(iter(users))  # choose an arbitrary non-Public user
+
     global USER_REGISTRY_FILE_PATH
+    storage.USER_KEY_MAP = storage.USER_KEY_MAP.replace(platforms.HOME, os.path.join(users_path, user), 1)
     USER_REGISTRY_FILE_PATH = os.path.join(path, 'user.reg')
     assert os.path.isfile(USER_REGISTRY_FILE_PATH)
