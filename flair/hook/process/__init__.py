@@ -6,7 +6,7 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 from typing import Tuple
-from ctypes import c_float, c_uint, c_uint32
+from ctypes import c_float, c_uint, c_uint32, sizeof
 
 from ... import platforms
 
@@ -27,6 +27,12 @@ READ_ADDRESSES = {
     'singleplayer':   (0x67334C, c_uint32),  # whether player is loaded into SP
     'in_space':       (0x673560, c_uint32),  # whether the player is in space (not docked) (possibly also 0x673530)
 }
+
+
+def get_value(process: 'HANDLE', key, size=None):
+    """Read a value from memory. `key` refers to the key of an address in `READ_ADDRESSES`"""
+    address, datatype = READ_ADDRESSES[key]
+    return read_memory(process, address, datatype, buffer_size=size or (sizeof(datatype) * 8))
 
 
 def get_string(process: 'HANDLE', key, length):
@@ -86,6 +92,6 @@ def get_docked(process: 'HANDLE') -> bool:
 
 
 if platforms.WIN32:
-    from .win32 import get_process, read_memory, get_value
+    from .win32 import get_process, read_memory
 elif platforms.LINUX:
     pass
