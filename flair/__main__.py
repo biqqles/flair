@@ -7,7 +7,7 @@
 """
 import argparse
 
-from . import events, augment, platforms
+from . import events, augment, platforms, hook
 from . import FreelancerState
 
 
@@ -15,10 +15,8 @@ if __name__ == '__main__':
     # parse command line arguments
     parser = argparse.ArgumentParser(prog='flair', description='flair, a novel client-side hook for Freelancer')
     parser.add_argument('freelancer_dir', help='Path to a working Freelancer install directory')
-    arguments = parser.parse_args()
-
-    # enable ANSI colour codes on Windows
-    os.system('color')
+    if platforms.LINUX:
+        parser.add_argument('freelancer_wine_prefix_dir', help='Path to the Wine prefix containing Freelancer')
 
     def print_event(*args):
         """Print an event to terminal with emphasis (using ANSI colour codes). How this displays exactly varies between
@@ -39,6 +37,11 @@ if __name__ == '__main__':
         lambda message_sent: print_event('Chat box closed, message', f'{"" if message_sent else "un"}sent'))
     events.switched_to_foreground.connect(lambda: print_event('Freelancer switched to foreground'))
     events.switched_to_background.connect(lambda: print_event('Freelancer switched to background'))
+
+    arguments = parser.parse_args()
+
+    if platforms.LINUX:
+        hook.storage.linux.set_wine_prefix_path(arguments.freelancer_wine_prefix_dir)
 
     game_state = FreelancerState(arguments.freelancer_dir)
     game_state.begin_polling(print_state=True)
