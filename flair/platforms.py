@@ -6,9 +6,16 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 from sys import platform
+import os
 
 WIN32 = platform.startswith('win32')
 LINUX = platform.startswith('linux')
 
 if not WIN32 and not LINUX:
     raise NotImplementedError('This platform is not supported (yet)')
+
+if WIN32:
+    os.system('color')  # enable ANSI colour codes on Windows
+elif LINUX:
+    if os.geteuid() != 0:
+        raise ImportError('You must be superuser to use this library on Linux')

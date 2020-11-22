@@ -6,9 +6,8 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 import argparse
-import os
 
-from . import events, augment
+from . import events, augment, platforms
 from . import FreelancerState
 
 
