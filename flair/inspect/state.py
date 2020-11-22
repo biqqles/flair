@@ -121,7 +121,7 @@ class FreelancerState:
             self._process = process.get_process()
             events.freelancer_started.emit()
         else:  # Freelancer has been stopped
-            if self._process:
+            if self._process and type(self._process) is not int:
                 self._process.close()
             events.freelancer_stopped.emit()
 
