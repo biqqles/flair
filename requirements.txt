@@ -1,5 +1,5 @@
 deconstruct
-fl-flint>=0.5
+fl-flint>=0.8.1
 keyboard>=0.11.0
 Pillow
 pyperclip
