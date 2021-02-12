@@ -9,7 +9,7 @@ from setuptools import setup
 
 setup(
     name='fl-flair',
-    version='0.4',
+    version='0.5',
     author='biqqles',
     author_email='biqqles@protonmail.com',
     description='A novel client-side hook for Freelancer',
@@ -21,6 +21,7 @@ setup(
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)',
         'Operating System :: Microsoft :: Windows',
+        'Operating System :: POSIX :: Linux',
         'Topic :: Games/Entertainment',
         'Intended Audience :: Developers',
         'Development Status :: 3 - Alpha'

@@ -1,7 +1,7 @@
 # flair
-**flair** (*FreeLancer Augmentation and Inspection at Runtime*) is a client-side hook for the 2003 space sim [*Freelancer*](https://en.wikipedia.org/wiki/Freelancer_%28video_game%29) which requires no changes to the game files and no code to be injected into the game's process.
+**flair** (*FreeLancer Augmentation and Inspection at Runtime*) is a client-side hook for the 2003 space sim [*Freelancer*](https://en.wikipedia.org/wiki/Freelancer_%28video_game%29) which requires no changes to the game files and no code to be injected into the game's process. It supports Freelancer running natively on Windows and also on Linux under WINE.
 
-flair achieves this through a combination of hooking user input, reading process memory and window interaction using the Win32 API, and an understanding of Freelancer's static data provided by [flint](https://github.com/biqqles/flint). Through these means flair allows the game's state to be inspected in real-time. It also allows the game client to be augmented, for example adding clipboard access to the game's chat box or implementing a custom command line interface.
+flair achieves this through a combination of hooking user input, reading process memory and window interaction using the Win32 API or Linux syscalls, and an understanding of Freelancer's static data provided by [flint](https://github.com/biqqles/flint). Through these means flair allows the game's state to be inspected in real-time. It also allows the game client to be augmented, for example adding clipboard access to the game's chat box or implementing a custom command line interface.
 
 ### Installation
 flair is on [PyPI](https://pypi.org/project/fl-flair/):
