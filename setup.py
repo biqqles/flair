@@ -5,18 +5,22 @@
  License, v. 2.0. If a copy of the MPL was not distributed with this
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='fl-flair',
     version='0.5',
+
     author='biqqles',
     author_email='biqqles@protonmail.com',
+    url='https://github.com/biqqles/flair',
+
     description='A novel client-side hook for Freelancer',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url='https://github.com/biqqles/flair',
-    packages=['flair', 'flair.augment', 'flair.hook', 'flair.inspect'],
+
+    packages=find_packages(),
+
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)',
@@ -26,6 +30,7 @@ setup(
         'Intended Audience :: Developers',
         'Development Status :: 3 - Alpha'
     ],
+
     python_requires='>=3.6',
     install_requires=open('requirements.txt').readlines(),
 )
