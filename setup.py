@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='fl-flair',
-    version='0.5',
+    version='0.5.1',
 
     author='biqqles',
     author_email='biqqles@protonmail.com',
